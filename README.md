@@ -4,20 +4,19 @@ A premium, modern web application to display your GitHub and LeetCode statistics
 
 ## 🚀 Features
 
+*   **Powered by MCP Integrations**:
+    *   Utilizes **Model Context Protocol (MCP)** concepts to aggregate data from multiple developer platforms.
+    *   Acts as a central "Context Server" normalizing data from **GitHub** and **LeetCode** into a unified schema.
 *   **Unified Dashboard**: View GitHub and LeetCode stats side-by-side.
 *   **GitHub Insights**:
     *   Profile overview (Followers, Following, Bio).
-    *   Total Public Repositories & Total Stars (from top repos).
-    *   **Contribution Heatmap**: A visual representation of your daily contributions (similar to GitHub's profile) with custom styling.
-    *   **Top Repositories**: Display your most popular repos with language colors, stars, and forks.
+    *   **Contribution Heatmap**: Visualizes daily activity using GraphQL data sources.
+    *   **Top Repositories**: detailed metrics via the GitHub MCP-style integration.
 *   **LeetCode Statistics**:
-    *   Total Problems Solved.
-    *   Breakdown by difficulty (Easy, Medium, Hard) with progress bars.
-    *   Custom LeetCode-themed UI.
+    *   Real-time problem-solving metrics fetched via custom connectors.
 *   **Modern UI/UX**:
     *   **Dark Mode**: Sleek dark theme using GitHub's color palette.
     *   **Responsive Design**: Fully responsive layout for mobile and desktop.
-    *   **Animations**: Smooth fade-in effects and transitions.
 
 ## 🛠️ Tech Stack
 
@@ -26,10 +25,10 @@ A premium, modern web application to display your GitHub and LeetCode statistics
 *   **Vite**: Next-generation frontend tooling for fast development and building.
 *   **Tailwind CSS**: Utility-first CSS framework for rapid and custom styling.
 
-### Backend
-*   **Node.js & Express**: Lightweight server to handle API requests.
-*   **GitHub GraphQL API**: Fetches detailed user and repository data.
-*   **LeetCode GraphQL API**: Fetches user problem-solving stats.
+### Backend (The "MCP" Layer)
+*   **Node.js & Express**: Serves as the aggregator, handling secure token management and API routing.
+*   **GitHub Connector**: Uses the **GitHub GraphQL API** to retrieve deep context about user activity and repositories.
+*   **LeetCode Connector**: Interfaces with the **LeetCode GraphQL API** to fetch real-time problem-solving stats.
 
 ## ⚙️ Prerequisites
 
