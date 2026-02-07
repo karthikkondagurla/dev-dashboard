@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Stats Showcase</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>GitHub Stats Showcase</h1>
+            <div class="search-bar">
+                <input type="text" id="usernameInput" placeholder="Enter GitHub username...">
+                <button id="searchBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main id="statsContainer" class="hidden">
+            <div class="profile-header">
+                <img id="avatar" src="" alt="Avatar" class="avatar">
+                <div class="profile-info">
+                    <h2 id="name"></h2>
+                    <p id="username"></p>
+                    <p id="bio"></p>
+                    <div class="social-stats">
+                        <span><strong id="followers"></strong> Followers</span>
+                        <span><strong id="following"></strong> Following</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Public Repos</h3>
+                    <p id="publicRepos" class="stat-value"></p>
+                </div>
+                <!-- Note: Total stars/forks are approximate in this V1 based on top fetched repos, 
+                      or need GraphQL for accuracy. We'll label them "Top Repos Stars" for now or similar if limited. -->
+                <div class="stat-card">
+                    <h3>Top Repos Stars</h3>
+                    <p id="totalStars" class="stat-value"></p>
+                </div>
+            </div>
+
+            <!-- Contribution Heatmap -->
+            <div class="heatmap-section">
+                <h3>Contribution Heatmap</h3>
+                <div class="heatmap-container" id="heatmapContainer">
+                    <!-- Heatmap injected here -->
+                </div>
+            </div>
+
+            <section class="repos-section">
+                <h3>Top Repositories</h3>
+                <div id="reposGrid" class="repos-grid">
+                    <!-- Repos injected here -->
+                </div>
+            </section>
+        </main>
+
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Fetching data via GitHub CLI...</p>
+        </div>
+
+        <div id="error" class="hidden">
+            <p class="error-msg"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
