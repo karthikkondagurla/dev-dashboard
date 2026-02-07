@@ -43,11 +43,53 @@ async function fetchStats(username) {
         const data = await response.json();
         renderStats(data);
         statsContainer.classList.remove('hidden');
+
+        // Fetch LeetCode Stats (Assuming same username for now, or we could add a separate input)
+        fetchLeetCodeStats(username);
+
     } catch (err) {
         showError(err.message);
     } finally {
         showLoading(false);
     }
+}
+
+async function fetchLeetCodeStats(username) {
+    const lcSection = document.getElementById('leetcodeSection');
+    try {
+        const response = await fetch(`/api/leetcode/${username}`);
+        if (!response.ok) {
+            lcSection.classList.add('hidden');
+            return;
+        }
+
+        const data = await response.json();
+        renderLeetCodeStats(data);
+        lcSection.classList.remove('hidden');
+    } catch (err) {
+        console.log('LeetCode fetch failed:', err);
+        lcSection.classList.add('hidden');
+    }
+}
+
+function renderLeetCodeStats(data) {
+    document.getElementById('lcTotal').textContent = data.totalSolved;
+    document.getElementById('lcTotalQuestions').textContent = data.totalQuestions;
+
+    // Easy
+    document.getElementById('lcEasy').textContent = data.easySolved;
+    document.getElementById('lcEasyTotal').textContent = data.easyTotal;
+    document.getElementById('lcEasyBar').style.width = `${(data.easySolved / data.easyTotal) * 100}%`;
+
+    // Medium
+    document.getElementById('lcMedium').textContent = data.mediumSolved;
+    document.getElementById('lcMediumTotal').textContent = data.mediumTotal;
+    document.getElementById('lcMediumBar').style.width = `${(data.mediumSolved / data.mediumTotal) * 100}%`;
+
+    // Hard
+    document.getElementById('lcHard').textContent = data.hardSolved;
+    document.getElementById('lcHardTotal').textContent = data.hardTotal;
+    document.getElementById('lcHardBar').style.width = `${(data.hardSolved / data.hardTotal) * 100}%`;
 }
 
 function renderStats(data) {

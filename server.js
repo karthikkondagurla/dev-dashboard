@@ -2,6 +2,11 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 const port = 3000;
 
 const { exec } = require('child_process');
@@ -128,6 +133,73 @@ app.get('/api/stats/:username', async (req, res) => {
     } catch (error) {
         console.error('Fetch error:', error);
         res.status(500).json({ error: 'Failed to fetch GitHub data: ' + error.message });
+    }
+});
+
+// Get LeetCode stats for a specific user
+app.get('/api/leetcode/:username', async (req, res) => {
+    const username = req.params.username;
+
+    let query;
+    try {
+        query = fs.readFileSync(path.join(__dirname, 'leetcode_query.graphql'), 'utf8');
+    } catch (err) {
+        return res.status(500).json({ error: 'Failed to read LeetCode query file' });
+    }
+
+    try {
+        const response = await fetch('https://leetcode.com/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            },
+            body: JSON.stringify({
+                query: query,
+                variables: { username: username }
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`LeetCode API error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (data.errors) {
+            return res.status(404).json({ error: data.errors[0].message });
+        }
+
+        if (!data.data || !data.data.matchedUser) {
+            return res.status(404).json({ error: 'LeetCode user not found' });
+        }
+
+        const user = data.data.matchedUser;
+        const allQuestions = data.data.allQuestionsCount;
+        const solved = user.submitStats.acSubmissionNum;
+
+        // Helper to find count by difficulty
+        const getSolved = (diff) => solved.find(s => s.difficulty === diff)?.count || 0;
+        const getTotal = (diff) => allQuestions.find(q => q.difficulty === diff)?.count || 0;
+
+        const stats = {
+            username: user.username,
+            ranking: user.profile.ranking,
+            totalSolved: getSolved('All'),
+            totalQuestions: getTotal('All'),
+            easySolved: getSolved('Easy'),
+            easyTotal: getTotal('Easy'),
+            mediumSolved: getSolved('Medium'),
+            mediumTotal: getTotal('Medium'),
+            hardSolved: getSolved('Hard'),
+            hardTotal: getTotal('Hard'),
+        };
+
+        res.json(stats);
+
+    } catch (error) {
+        console.error('LeetCode Fetch error:', error);
+        res.status(500).json({ error: 'Failed to fetch LeetCode data: ' + error.message });
     }
 });
 

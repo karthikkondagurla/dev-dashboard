@@ -54,30 +54,68 @@
                 </div>
             </div>
 
-            <!-- Contribution Heatmap -->
-            <div class="heatmap-section">
-                <h3>Contribution Heatmap</h3>
-                <div class="heatmap-container" id="heatmapContainer">
-                    <!-- Heatmap injected here -->
+    </div>
+    </div>
+
+    <!-- LeetCode Stats -->
+    <div class="leetcode-section hidden" id="leetcodeSection">
+        <h3>LeetCode Statistics</h3>
+        <div class="leetcode-grid">
+            <div class="leetcode-card total">
+                <h4>Total Solved</h4>
+                <div class="circle-progress" id="lcTotalCircle">
+                    <span id="lcTotal">0</span>
+                </div>
+                <p class="sub-text">/ <span id="lcTotalQuestions">0</span></p>
+            </div>
+            <div class="leetcode-card easy">
+                <h4>Easy</h4>
+                <p><strong id="lcEasy">0</strong> / <span id="lcEasyTotal">0</span></p>
+                <div class="progress-bar">
+                    <div id="lcEasyBar" style="width: 0%"></div>
                 </div>
             </div>
-
-            <section class="repos-section">
-                <h3>Top Repositories</h3>
-                <div id="reposGrid" class="repos-grid">
-                    <!-- Repos injected here -->
+            <div class="leetcode-card medium">
+                <h4>Medium</h4>
+                <p><strong id="lcMedium">0</strong> / <span id="lcMediumTotal">0</span></p>
+                <div class="progress-bar">
+                    <div id="lcMediumBar" style="width: 0%"></div>
                 </div>
-            </section>
-        </main>
-
-        <div id="loading" class="hidden">
-            <div class="spinner"></div>
-            <p>Fetching data via GitHub CLI...</p>
+            </div>
+            <div class="leetcode-card hard">
+                <h4>Hard</h4>
+                <p><strong id="lcHard">0</strong> / <span id="lcHardTotal">0</span></p>
+                <div class="progress-bar">
+                    <div id="lcHardBar" style="width: 0%"></div>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div id="error" class="hidden">
-            <p class="error-msg"></p>
+    <!-- Contribution Heatmap -->
+    <div class="heatmap-section">
+        <h3>Contribution Heatmap</h3>
+        <div class="heatmap-container" id="heatmapContainer">
+            <!-- Heatmap injected here -->
         </div>
+    </div>
+
+    <section class="repos-section">
+        <h3>Top Repositories</h3>
+        <div id="reposGrid" class="repos-grid">
+            <!-- Repos injected here -->
+        </div>
+    </section>
+    </main>
+
+    <div id="loading" class="hidden">
+        <div class="spinner"></div>
+        <p>Fetching data via GitHub CLI...</p>
+    </div>
+
+    <div id="error" class="hidden">
+        <p class="error-msg"></p>
+    </div>
     </div>
     <script src="script.js"></script>
 </body>
