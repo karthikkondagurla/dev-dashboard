@@ -16,7 +16,7 @@ export default {
                 'leetcode-easy': '#00b8a3',
                 'leetcode-medium': '#ffc01e',
                 'leetcode-hard': '#ff375f',
-                'heatmap-0': '#161b22',
+                'heatmap-0': '#2d333b',
                 'heatmap-1': '#0e4429',
                 'heatmap-2': '#006d32',
                 'heatmap-3': '#26a641',
