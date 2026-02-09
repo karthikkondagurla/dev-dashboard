@@ -7,12 +7,15 @@ import Heatmap from './components/Heatmap';
 import RepoList from './components/RepoList';
 import McpChat from './components/McpChat';
 
+import GemmaChat from './components/GemmaChat';
+
 function App() {
   const [username, setUsername] = useState('');
   const [data, setData] = useState(null);
   const [leetcodeData, setLeetCodeData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('stats'); // 'stats', 'mcp', 'chat'
 
   useEffect(() => {
     // Initial load: Fetch current auth user
@@ -21,9 +24,6 @@ function App() {
         const response = await fetch('/api/user');
         if (response.ok) {
           const userData = await response.json();
-          // Don't auto-search if we want to show the MCP chat first, 
-          // but arguably the user still wants their stats. 
-          // Let's keep existing behavior.
           handleSearch(userData.username);
         }
       } catch (err) {
@@ -39,6 +39,7 @@ function App() {
     setError(null);
     setData(null);
     setLeetCodeData(null);
+    setActiveTab('stats'); // Switch to stats on search
 
     try {
       const response = await fetch(`/api/stats/${user}`);
@@ -74,8 +75,31 @@ function App() {
           </h1>
           <SearchBar onSearch={handleSearch} />
 
-          <div className="mt-8">
-            <McpChat />
+          {/* Navigation Tabs */}
+          <div className="flex justify-center gap-4 mt-8 mb-4">
+            <button
+              onClick={() => setActiveTab('stats')}
+              className={`px-4 py-2 rounded-lg font-semibold transition ${activeTab === 'stats' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+            >
+              Stats
+            </button>
+            <button
+              onClick={() => setActiveTab('mcp')}
+              className={`px-4 py-2 rounded-lg font-semibold transition ${activeTab === 'mcp' ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+            >
+              Context7 Search
+            </button>
+            <button
+              onClick={() => setActiveTab('chat')}
+              className={`px-4 py-2 rounded-lg font-semibold transition ${activeTab === 'chat' ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+            >
+              Gemma Chat
+            </button>
+          </div>
+
+          <div className="mt-4">
+            {activeTab === 'mcp' && <McpChat />}
+            {activeTab === 'chat' && <GemmaChat />}
           </div>
         </header>
 
@@ -94,7 +118,7 @@ function App() {
           </div>
         )}
 
-        {!loading && !error && data && (
+        {!loading && !error && data && activeTab === 'stats' && (
           <main className="animate-fade-in-up">
             <ProfileHeader data={data} />
 

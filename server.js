@@ -269,3 +269,37 @@ app.post('/api/mcp/call', express.json(), async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// Ollama Proxy
+app.post('/api/llm/chat', express.json(), async (req, res) => {
+    const { prompt, context } = req.body;
+    const model = 'gemma3:1b';
+
+    let fullPrompt = prompt;
+    if (context) {
+        fullPrompt = `Context:\n${context}\n\nQuestion:\n${prompt}\n\nAnswer:`;
+    }
+
+    try {
+        const response = await fetch('http://localhost:11434/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: model,
+                prompt: fullPrompt,
+                stream: false
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Ollama API error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        res.json({ response: data.response });
+
+    } catch (error) {
+        console.error('Ollama Chat Error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
