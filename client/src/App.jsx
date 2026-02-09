@@ -5,6 +5,7 @@ import StatsGrid from './components/StatsGrid';
 import LeetCodeStats from './components/LeetCodeStats';
 import Heatmap from './components/Heatmap';
 import RepoList from './components/RepoList';
+import McpChat from './components/McpChat';
 
 function App() {
   const [username, setUsername] = useState('');
@@ -20,6 +21,9 @@ function App() {
         const response = await fetch('/api/user');
         if (response.ok) {
           const userData = await response.json();
+          // Don't auto-search if we want to show the MCP chat first, 
+          // but arguably the user still wants their stats. 
+          // Let's keep existing behavior.
           handleSearch(userData.username);
         }
       } catch (err) {
@@ -62,13 +66,17 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-dark text-text-primary p-4 md:p-8 font-sans">
+    <div className="min-h-screen bg-gray-900 text-white p-4 md:p-8 font-sans">
       <div className="max-w-6xl mx-auto">
         <header className="text-center mb-10">
-          <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-accent to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
             GitHub Stats Showcase
           </h1>
           <SearchBar onSearch={handleSearch} />
+
+          <div className="mt-8">
+            <McpChat />
+          </div>
         </header>
 
         {loading && (

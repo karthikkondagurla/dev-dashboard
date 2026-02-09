@@ -206,3 +206,66 @@ app.get('/api/leetcode/:username', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+// MCP Client Setup
+let mcpClient = null;
+
+async function initMcpClient() {
+    if (mcpClient) return mcpClient;
+    try {
+        const { Client } = await import('@modelcontextprotocol/sdk/client/index.js');
+        const { StdioClientTransport } = await import('@modelcontextprotocol/sdk/client/stdio.js');
+
+        const transport = new StdioClientTransport({
+            command: 'npx',
+            args: ['-y', '@upstash/context7-mcp']
+        });
+
+        const client = new Client({
+            name: "dev-dashboard-client",
+            version: "1.0.0",
+        }, {
+            capabilities: {}
+        });
+
+        await client.connect(transport);
+        mcpClient = client;
+        console.log('Connected to Context7 MCP');
+    } catch (error) {
+        console.error('Failed to connect to Context7 MCP:', error);
+    }
+    return mcpClient;
+}
+
+// Initialize MCP on startup
+initMcpClient();
+
+app.get('/api/mcp/tools', async (req, res) => {
+    try {
+        const client = await initMcpClient();
+        if (!client) return res.status(503).json({ error: 'MCP client unavailable' });
+
+        const tools = await client.listTools();
+        res.json(tools);
+    } catch (error) {
+        console.error('MCP List Tools Error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/mcp/call', express.json(), async (req, res) => {
+    try {
+        const client = await initMcpClient();
+        if (!client) return res.status(503).json({ error: 'MCP client unavailable' });
+
+        const { name, args } = req.body;
+        const result = await client.callTool({
+            name,
+            arguments: args || {}
+        });
+        res.json(result);
+    } catch (error) {
+        console.error('MCP Call Tool Error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
